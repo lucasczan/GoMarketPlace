@@ -59,12 +59,15 @@ const CartProvider: React.FC = ({ children }) => {
 
   const increment = useCallback(
     async id => {
-      const productIndex = products.findIndex(item => item.id === id);
-      const newArray = [...products];
+      const found = products.find(prod => prod.id === id);
+      if (found) {
+        const productIndex = products.findIndex(item => item.id === id);
+        const newArray = [...products];
 
-      newArray[productIndex].quantity += 1;
+        newArray[productIndex].quantity += 1;
 
-      setProducts(newArray);
+        setProducts(newArray);
+      }
       await AsyncStorage.setItem('@GoMarketPlace', JSON.stringify(products));
     },
     [products],
@@ -72,15 +75,18 @@ const CartProvider: React.FC = ({ children }) => {
 
   const decrement = useCallback(
     async id => {
-      const productIndex = products.findIndex(item => item.id === id);
-      const newArray = [...products];
+      const found = products.find(prod => prod.id === id);
+      if (found) {
+        const productIndex = products.findIndex(item => item.id === id);
+        const newArray = [...products];
 
-      if (newArray[productIndex].quantity === 1) {
-        const removeItem = products.filter(item => item.id !== id);
-        setProducts(removeItem);
-      } else {
-        newArray[productIndex].quantity -= 1;
-        setProducts(newArray);
+        if (newArray[productIndex].quantity === 1) {
+          const removeItem = products.filter(item => item.id !== id);
+          setProducts(removeItem);
+        } else {
+          newArray[productIndex].quantity -= 1;
+          setProducts(newArray);
+        }
       }
       await AsyncStorage.setItem('@GoMarketPlace', JSON.stringify(products));
     },
